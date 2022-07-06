@@ -24,6 +24,7 @@ namespace chartFinal
     {
         List<Universitate> jsonData;
         TabPage tb_chart;
+        ChartArea chartArea;
 
         public Form1()
         {
@@ -103,7 +104,7 @@ namespace chartFinal
         public void ThreadUniversitati()
         {
             var client = new HttpClient();
-            var ep = new Uri("http://universities.hipolabs.com/search?name=middle");
+            var ep = new Uri("http://universities.hipolabs.com/search?name=medic");
             var res = client.GetAsync(ep).Result;
             var JSON = res.Content.ReadAsStringAsync().Result;
             jsonData = JsonConvert.DeserializeObject<List<Universitate>>(JSON);
@@ -182,6 +183,7 @@ namespace chartFinal
 
             chart1.Enabled = true;
             chart1.Visible = true;
+            
 
             string[] str = new string[jsonData.Count];
             string[] distStr = new string[jsonData.Count];
@@ -197,9 +199,26 @@ namespace chartFinal
                 int nr = str.Count(x => x == distStr[i]);
                 chart1.Series[0].Points.AddXY(distStr[i].ToString(), nr);
             }
-            //-----------------------------------------------------------------------
+
+            chartArea = chart1.ChartAreas[chart1.Series[0].ChartArea];
+
+            chartArea.AxisX.Minimum = 0;
+            chartArea.AxisX.Maximum = distStr.Length + 1;
+
+            chartArea.CursorX.AutoScroll = true;
+
+            chartArea.AxisX.ScaleView.Zoomable = true;
+            chartArea.AxisX.ScaleView.SizeType = DateTimeIntervalType.Number;
+            int position = 0;
+            int size = 5;
+            chartArea.AxisX.ScaleView.Zoom(position, size);
+
+            chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
+
 
         }
+
+
         //-----------------------------------------------------------------------------------
 
         //TEXT FILE-------------------------------------------------------------------------
@@ -323,9 +342,10 @@ namespace chartFinal
             stream.Close();
             client.Dispose();
         }
+
     }
 
-        public class Universitate
+    public class Universitate
         {
             public string[] web_pages { get; set; }
             public string name { get; set; }
