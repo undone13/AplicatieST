@@ -83,7 +83,6 @@ namespace chartFinal
             foreach (var exp in winExp)
             {
                 exp.Kill();
-                Process.Start(exp.ProcessName);
             }
         }
         public void Thread()
@@ -178,8 +177,8 @@ namespace chartFinal
 
 
             //CHART-----------------------------------------------------------------
-            if (jsonData == null)
-                System.Threading.Thread.Sleep(1000);
+            while(jsonData == null)
+                System.Threading.Thread.Sleep(10);
 
             chart1.Enabled = true;
             chart1.Visible = true;
